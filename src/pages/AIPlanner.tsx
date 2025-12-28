@@ -1,12 +1,26 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAIChat } from "@/hooks/useAIChat";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Sparkles, Send, Bot, User, MapPin, Calendar, Wallet, 
-  Loader2, RotateCcw, Lightbulb, Plane, Hotel, Utensils
+  Loader2, RotateCcw, Lightbulb, Plane, Hotel, Utensils, Save, FolderOpen
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const suggestedPrompts = [
   "Plan a 7-day trip to Ladakh with adventure activities",
@@ -28,7 +42,14 @@ const features = [
 
 export default function AIPlanner() {
   const [input, setInput] = useState("");
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveData, setSaveData] = useState({ title: "", destination: "", duration: "", budget: "" });
+  const [isSaving, setIsSaving] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   const { messages, isLoading, error, sendMessage, clearChat } = useAIChat(
     "Hello! I'm your AI travel companion. 🌏 Tell me about your dream trip — where you want to go, your interests, budget, and travel dates — and I'll create a personalized itinerary just for you!"
@@ -51,6 +72,71 @@ export default function AIPlanner() {
   const handleSuggestedPrompt = (prompt: string) => {
     sendMessage(prompt);
   };
+
+  const getConversationContent = () => {
+    return messages
+      .filter((m) => m.role === "assistant" && m.content.length > 100)
+      .map((m) => m.content)
+      .join("\n\n---\n\n");
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save your itineraries",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    setShowSaveDialog(true);
+  };
+
+  const confirmSave = async () => {
+    if (!saveData.title || !saveData.destination) {
+      toast({
+        title: "Missing information",
+        description: "Please provide a title and destination",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const { error } = await supabase.from("itineraries").insert({
+        user_id: user!.id,
+        title: saveData.title,
+        destination: saveData.destination,
+        duration: saveData.duration || null,
+        budget: saveData.budget || null,
+        content: getConversationContent(),
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Trip saved!",
+        description: "Your itinerary has been saved to My Trips",
+      });
+      setShowSaveDialog(false);
+      setSaveData({ title: "", destination: "", duration: "", budget: "" });
+    } catch (err) {
+      console.error("Error saving itinerary:", err);
+      toast({
+        title: "Error",
+        description: "Failed to save itinerary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const hasItinerary = messages.some((m) => m.role === "assistant" && m.content.length > 200);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -111,6 +197,16 @@ export default function AIPlanner() {
                   ))}
                 </div>
               </div>
+
+              {/* My Trips Link */}
+              {user && (
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/my-trips">
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    View My Trips
+                  </Link>
+                </Button>
+              )}
             </div>
 
             {/* Chat Interface */}
@@ -129,10 +225,18 @@ export default function AIPlanner() {
                     </p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={clearChat} disabled={isLoading}>
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  New Chat
-                </Button>
+                <div className="flex gap-2">
+                  {hasItinerary && (
+                    <Button variant="outline" size="sm" onClick={handleSave}>
+                      <Save className="w-4 h-4 mr-2" />
+                      Save Trip
+                    </Button>
+                  )}
+                  <Button variant="ghost" size="sm" onClick={clearChat} disabled={isLoading}>
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    New Chat
+                  </Button>
+                </div>
               </div>
 
               {/* Messages */}
@@ -238,6 +342,70 @@ export default function AIPlanner() {
           </div>
         </div>
       </main>
+
+      {/* Save Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save Itinerary</DialogTitle>
+            <DialogDescription>
+              Give your trip a name and add some details
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Trip Name *</Label>
+              <Input
+                id="title"
+                placeholder="e.g., Ladakh Adventure 2024"
+                value={saveData.title}
+                onChange={(e) => setSaveData({ ...saveData, title: e.target.value })}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="destination">Destination *</Label>
+              <Input
+                id="destination"
+                placeholder="e.g., Ladakh, India"
+                value={saveData.destination}
+                onChange={(e) => setSaveData({ ...saveData, destination: e.target.value })}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration</Label>
+                <Input
+                  id="duration"
+                  placeholder="e.g., 7 days"
+                  value={saveData.duration}
+                  onChange={(e) => setSaveData({ ...saveData, duration: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="budget">Budget</Label>
+                <Input
+                  id="budget"
+                  placeholder="e.g., ₹50,000"
+                  value={saveData.budget}
+                  onChange={(e) => setSaveData({ ...saveData, budget: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="hero" onClick={confirmSave} disabled={isSaving}>
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Trip"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
