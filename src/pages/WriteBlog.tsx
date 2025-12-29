@@ -36,7 +36,9 @@ export default function WriteBlog() {
   }, [user, authLoading, navigate]);
 
   const generateSlug = (title: string) => {
-    return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const uniqueSuffix = Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+    return `${baseSlug}-${uniqueSuffix}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
