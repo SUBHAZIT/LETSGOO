@@ -1,16 +1,70 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   MapPin, Star, Clock, Sun, Thermometer, ArrowLeft,
-  Utensils, Lightbulb, Camera, Mountain
+  Utensils, Lightbulb, Camera, Mountain, Loader2
 } from "lucide-react";
-import { destinations } from "./Destinations";
+import type { Destination } from "./Destinations";
+
+import heroImage from "@/assets/hero-mountains.jpg";
+import tajmahal from "@/assets/destination-tajmahal.jpg";
+import ladakh from "@/assets/destination-ladakh.jpg";
+import kerala from "@/assets/destination-kerala.jpg";
+import goa from "@/assets/destination-goa.jpg";
+
+const fallbackImages: Record<string, string> = {
+  rajasthan: tajmahal,
+  kerala: kerala,
+  ladakh: ladakh,
+  goa: goa,
+  varanasi: tajmahal,
+  himachal: heroImage,
+};
 
 export default function DestinationDetail() {
   const { id } = useParams();
-  const destination = destinations.find((d) => d.id === id);
+  const [destination, setDestination] = useState<Destination | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDestination = async () => {
+      const { data, error } = await supabase
+        .from("destinations")
+        .select("*")
+        .eq("slug", id)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error("Error fetching destination:", error);
+        setDestination(null);
+      } else {
+        setDestination({
+          ...data,
+          attractions: (data.attractions as unknown) as { name: string; description: string }[],
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchDestination();
+  }, [id]);
+
+  const getImage = (dest: Destination) => {
+    if (dest.image_url) return dest.image_url;
+    return fallbackImages[dest.slug] || heroImage;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!destination) {
     return (
@@ -38,7 +92,7 @@ export default function DestinationDetail() {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px]">
         <img
-          src={destination.image}
+          src={getImage(destination)}
           alt={destination.name}
           className="w-full h-full object-cover"
         />
@@ -78,14 +132,14 @@ export default function DestinationDetail() {
               <Sun className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Best Time</p>
-                <p className="font-semibold text-foreground">{destination.bestTime}</p>
+                <p className="font-semibold text-foreground">{destination.best_time}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Ideal Duration</p>
-                <p className="font-semibold text-foreground">{destination.idealDuration}</p>
+                <p className="font-semibold text-foreground">{destination.ideal_duration}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -132,71 +186,77 @@ export default function DestinationDetail() {
             </section>
 
             {/* Attractions */}
-            <section>
-              <h2 className="font-display text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Mountain className="w-6 h-6 text-primary" />
-                Must-Visit Attractions
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {destination.attractions.map((attraction) => (
-                  <div
-                    key={attraction.name}
-                    className="p-5 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
-                  >
-                    <h3 className="font-semibold text-foreground mb-2">{attraction.name}</h3>
-                    <p className="text-muted-foreground text-sm">{attraction.description}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {destination.attractions.length > 0 && (
+              <section>
+                <h2 className="font-display text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                  <Mountain className="w-6 h-6 text-primary" />
+                  Must-Visit Attractions
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {destination.attractions.map((attraction) => (
+                    <div
+                      key={attraction.name}
+                      className="p-5 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors"
+                    >
+                      <h3 className="font-semibold text-foreground mb-2">{attraction.name}</h3>
+                      <p className="text-muted-foreground text-sm">{attraction.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Local Cuisine */}
-            <section>
-              <h2 className="font-display text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Utensils className="w-6 h-6 text-primary" />
-                Local Cuisine to Try
-              </h2>
-              <div className="flex flex-wrap gap-3">
-                {destination.cuisine.map((dish) => (
-                  <span
-                    key={dish}
-                    className="px-4 py-2 rounded-full bg-accent/10 text-accent font-medium"
-                  >
-                    {dish}
-                  </span>
-                ))}
-              </div>
-            </section>
+            {destination.cuisine.length > 0 && (
+              <section>
+                <h2 className="font-display text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                  <Utensils className="w-6 h-6 text-primary" />
+                  Local Cuisine to Try
+                </h2>
+                <div className="flex flex-wrap gap-3">
+                  {destination.cuisine.map((dish) => (
+                    <span
+                      key={dish}
+                      className="px-4 py-2 rounded-full bg-accent/10 text-accent font-medium"
+                    >
+                      {dish}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Travel Tips Card */}
-            <div className="bg-card rounded-2xl p-6 border border-border sticky top-24">
-              <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Lightbulb className="w-5 h-5 text-accent" />
-                Travel Tips
-              </h3>
-              <ul className="space-y-3">
-                {destination.travelTips.map((tip, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
-                      {index + 1}
-                    </span>
-                    <p className="text-muted-foreground text-sm">{tip}</p>
-                  </li>
-                ))}
-              </ul>
+            {destination.travel_tips.length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-border sticky top-24">
+                <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-accent" />
+                  Travel Tips
+                </h3>
+                <ul className="space-y-3">
+                  {destination.travel_tips.map((tip, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {index + 1}
+                      </span>
+                      <p className="text-muted-foreground text-sm">{tip}</p>
+                    </li>
+                  ))}
+                </ul>
 
-              <div className="mt-6 pt-6 border-t border-border">
-                <Link to="/ai-planner">
-                  <Button variant="hero" className="w-full">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Plan Your Trip with AI
-                  </Button>
-                </Link>
+                <div className="mt-6 pt-6 border-t border-border">
+                  <Link to="/ai-planner">
+                    <Button variant="hero" className="w-full">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Plan Your Trip with AI
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
