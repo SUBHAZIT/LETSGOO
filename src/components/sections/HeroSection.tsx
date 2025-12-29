@@ -60,7 +60,7 @@ export function HeroSection() {
             className="text-primary-foreground"
           >
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-              Find your pace
+              Find your peace
               <br />
               in India.
             </h1>
