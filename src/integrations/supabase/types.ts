@@ -14,6 +14,198 @@ export type Database = {
   }
   public: {
     Tables: {
+      adventures: {
+        Row: {
+          altitude: string | null
+          best_time: string
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          distance: string | null
+          duration: string
+          essentials: string[]
+          group_size: string
+          highlights: string[]
+          id: string
+          image_url: string | null
+          is_published: boolean
+          itinerary: Json
+          location: string
+          physical_requirement: string | null
+          rating: number
+          reviews: number
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          altitude?: string | null
+          best_time: string
+          category: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          distance?: string | null
+          duration: string
+          essentials?: string[]
+          group_size: string
+          highlights?: string[]
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          itinerary?: Json
+          location: string
+          physical_requirement?: string | null
+          rating?: number
+          reviews?: number
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          altitude?: string | null
+          best_time?: string
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          distance?: string | null
+          duration?: string
+          essentials?: string[]
+          group_size?: string
+          highlights?: string[]
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          itinerary?: Json
+          location?: string
+          physical_requirement?: string | null
+          rating?: number
+          reviews?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blogs: {
+        Row: {
+          author_id: string
+          author_name: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string | null
+          is_published: boolean
+          published_at: string | null
+          read_time: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          category?: string
+          content: string
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          published_at?: string | null
+          read_time?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          category?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          published_at?: string | null
+          read_time?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      destinations: {
+        Row: {
+          attractions: Json
+          best_time: string
+          category: string
+          created_at: string
+          cuisine: string[]
+          description: string
+          highlights: string[]
+          id: string
+          ideal_duration: string
+          image_url: string | null
+          is_published: boolean
+          name: string
+          rating: number
+          reviews: number
+          slug: string
+          tagline: string
+          temperature: string
+          travel_tips: string[]
+          updated_at: string
+        }
+        Insert: {
+          attractions?: Json
+          best_time: string
+          category: string
+          created_at?: string
+          cuisine?: string[]
+          description: string
+          highlights?: string[]
+          id?: string
+          ideal_duration: string
+          image_url?: string | null
+          is_published?: boolean
+          name: string
+          rating?: number
+          reviews?: number
+          slug: string
+          tagline: string
+          temperature: string
+          travel_tips?: string[]
+          updated_at?: string
+        }
+        Update: {
+          attractions?: Json
+          best_time?: string
+          category?: string
+          created_at?: string
+          cuisine?: string[]
+          description?: string
+          highlights?: string[]
+          id?: string
+          ideal_duration?: string
+          image_url?: string | null
+          is_published?: boolean
+          name?: string
+          rating?: number
+          reviews?: number
+          slug?: string
+          tagline?: string
+          temperature?: string
+          travel_tips?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       itineraries: {
         Row: {
           budget: string | null
