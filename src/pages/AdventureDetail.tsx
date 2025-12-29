@@ -1,12 +1,30 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   MapPin, Star, Clock, Users, Mountain, ArrowLeft,
-  Calendar, AlertTriangle, Backpack, Route
+  Calendar, AlertTriangle, Backpack, Route, Loader2
 } from "lucide-react";
-import { adventures } from "./Adventures";
+import type { Adventure } from "./Adventures";
+
+import heroImage from "@/assets/hero-mountains.jpg";
+import ladakh from "@/assets/destination-ladakh.jpg";
+import kerala from "@/assets/destination-kerala.jpg";
+import goa from "@/assets/destination-goa.jpg";
+
+const fallbackImages: Record<string, string> = {
+  "chadar-trek": ladakh,
+  "scuba-andaman": goa,
+  "valley-flowers": heroImage,
+  "bir-billing": ladakh,
+  "kerala-kayaking": kerala,
+  "corbett-safari": heroImage,
+  "spiti-cycling": ladakh,
+  "ladakh-camping": ladakh,
+};
 
 const difficultyColors: Record<string, string> = {
   Easy: "bg-green-500/10 text-green-600",
@@ -16,7 +34,44 @@ const difficultyColors: Record<string, string> = {
 
 export default function AdventureDetail() {
   const { id } = useParams();
-  const adventure = adventures.find((a) => a.id === id);
+  const [adventure, setAdventure] = useState<Adventure | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAdventure = async () => {
+      const { data, error } = await supabase
+        .from("adventures")
+        .select("*")
+        .eq("slug", id)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error("Error fetching adventure:", error);
+        setAdventure(null);
+      } else {
+        setAdventure({
+          ...data,
+          itinerary: (data.itinerary as unknown) as { day: number; title: string; description: string }[],
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchAdventure();
+  }, [id]);
+
+  const getImage = (adv: Adventure) => {
+    if (adv.image_url) return adv.image_url;
+    return fallbackImages[adv.slug] || heroImage;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!adventure) {
     return (
@@ -44,7 +99,7 @@ export default function AdventureDetail() {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px]">
         <img
-          src={adventure.image}
+          src={getImage(adventure)}
           alt={adventure.title}
           className="w-full h-full object-cover"
         />
@@ -58,7 +113,7 @@ export default function AdventureDetail() {
             </Link>
             
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${difficultyColors[adventure.difficulty]}`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-semibold ${difficultyColors[adventure.difficulty] || difficultyColors.Moderate}`}>
                 {adventure.difficulty}
               </span>
               <div className="flex items-center gap-1 text-white">
@@ -94,28 +149,28 @@ export default function AdventureDetail() {
               <Users className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Group Size</p>
-                <p className="font-semibold text-foreground">{adventure.groupSize}</p>
+                <p className="font-semibold text-foreground">{adventure.group_size}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Mountain className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Altitude</p>
-                <p className="font-semibold text-foreground">{adventure.altitude}</p>
+                <p className="font-semibold text-foreground">{adventure.altitude || "N/A"}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Route className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Distance</p>
-                <p className="font-semibold text-foreground">{adventure.distance}</p>
+                <p className="font-semibold text-foreground">{adventure.distance || "N/A"}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Best Time</p>
-                <p className="font-semibold text-foreground">{adventure.bestTime}</p>
+                <p className="font-semibold text-foreground">{adventure.best_time}</p>
               </div>
             </div>
           </div>
@@ -137,75 +192,83 @@ export default function AdventureDetail() {
             </section>
 
             {/* Highlights */}
-            <section>
-              <h2 className="font-display text-2xl font-bold text-foreground mb-6">
-                Highlights
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {adventure.highlights.map((highlight) => (
-                  <div
-                    key={highlight}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-primary/5"
-                  >
-                    <Star className="w-5 h-5 text-primary flex-shrink-0" />
-                    <span className="text-foreground">{highlight}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {adventure.highlights.length > 0 && (
+              <section>
+                <h2 className="font-display text-2xl font-bold text-foreground mb-6">
+                  Highlights
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {adventure.highlights.map((highlight) => (
+                    <div
+                      key={highlight}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-primary/5"
+                    >
+                      <Star className="w-5 h-5 text-primary flex-shrink-0" />
+                      <span className="text-foreground">{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Itinerary */}
-            <section>
-              <h2 className="font-display text-2xl font-bold text-foreground mb-6">
-                Day-by-Day Itinerary
-              </h2>
-              <div className="space-y-4">
-                {adventure.itinerary.map((day, index) => (
-                  <div
-                    key={index}
-                    className="flex gap-4 p-4 rounded-xl bg-card border border-border"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center flex-shrink-0">
-                      D{day.day}
+            {adventure.itinerary.length > 0 && (
+              <section>
+                <h2 className="font-display text-2xl font-bold text-foreground mb-6">
+                  Day-by-Day Itinerary
+                </h2>
+                <div className="space-y-4">
+                  {adventure.itinerary.map((day, index) => (
+                    <div
+                      key={index}
+                      className="flex gap-4 p-4 rounded-xl bg-card border border-border"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center flex-shrink-0">
+                        D{day.day}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground">{day.title}</h3>
+                        <p className="text-muted-foreground text-sm mt-1">{day.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">{day.title}</h3>
-                      <p className="text-muted-foreground text-sm mt-1">{day.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Essentials Card */}
-            <div className="bg-card rounded-2xl p-6 border border-border">
-              <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Backpack className="w-5 h-5 text-primary" />
-                What to Pack
-              </h3>
-              <ul className="space-y-2">
-                {adventure.essentials.map((item, index) => (
-                  <li key={index} className="flex items-center gap-2 text-muted-foreground">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {adventure.essentials.length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-border">
+                <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                  <Backpack className="w-5 h-5 text-primary" />
+                  What to Pack
+                </h3>
+                <ul className="space-y-2">
+                  {adventure.essentials.map((item, index) => (
+                    <li key={index} className="flex items-center gap-2 text-muted-foreground">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Physical Requirements */}
-            <div className="bg-card rounded-2xl p-6 border border-border">
-              <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-accent" />
-                Physical Requirements
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                {adventure.physicalRequirement}
-              </p>
-            </div>
+            {adventure.physical_requirement && (
+              <div className="bg-card rounded-2xl p-6 border border-border">
+                <h3 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-accent" />
+                  Physical Requirements
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  {adventure.physical_requirement}
+                </p>
+              </div>
+            )}
 
             {/* CTA */}
             <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-6 border border-primary/20">
