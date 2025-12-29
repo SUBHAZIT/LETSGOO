@@ -21,7 +21,7 @@ interface BlogPost {
 const fallbackImages = [blogBeaches, blogFood, blogAdventureKids, blogLandmarks];
 
 const staticFeaturedArticle = {
-  tags: ["FEATURED", "BEACHES"],
+  category: "BEACHES",
   title: "Explore the best beaches in Goa",
   image: blogBeaches,
   href: "/blog/best-beaches-goa",
@@ -75,10 +75,28 @@ export function GetInspiredSection() {
     fetchBlogs();
   }, []);
 
-  // Use static content as fallback when no database blogs
+  // Show database blogs if available, otherwise show static content
   const hasDatabaseBlogs = blogs.length > 0;
-  const featuredBlog = hasDatabaseBlogs ? blogs[0] : null;
-  const sideBlogs = hasDatabaseBlogs ? blogs.slice(1, 4) : staticSideArticles;
+  
+  // Featured article - use first blog if available, otherwise static
+  const featuredArticle = hasDatabaseBlogs 
+    ? {
+        title: blogs[0].title,
+        image: blogs[0].image_url || blogBeaches,
+        href: `/blog/${blogs[0].slug}`,
+        category: blogs[0].category.toUpperCase(),
+      }
+    : staticFeaturedArticle;
+
+  // Side articles - use remaining blogs if available, otherwise static
+  const sideArticles = hasDatabaseBlogs 
+    ? blogs.slice(1, 4).map((blog, index) => ({
+        category: blog.category.toUpperCase(),
+        title: blog.title,
+        image: blog.image_url || fallbackImages[index + 1],
+        href: `/blog/${blog.slug}`,
+      }))
+    : staticSideArticles;
 
   return (
     <section className="py-20 bg-background overflow-hidden">
@@ -118,12 +136,12 @@ export function GetInspiredSection() {
               className="lg:col-span-3"
             >
               <Link
-                to={hasDatabaseBlogs ? `/blog/${featuredBlog!.slug}` : staticFeaturedArticle.href}
+                to={featuredArticle.href}
                 className="group relative rounded-2xl overflow-hidden aspect-[4/3] block"
               >
                 <img
-                  src={hasDatabaseBlogs ? (featuredBlog!.image_url || blogBeaches) : staticFeaturedArticle.image}
-                  alt={hasDatabaseBlogs ? featuredBlog!.title : staticFeaturedArticle.title}
+                  src={featuredArticle.image}
+                  alt={featuredArticle.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent" />
@@ -134,14 +152,14 @@ export function GetInspiredSection() {
                     FEATURED
                   </span>
                   <span className="px-3 py-1 rounded-full text-xs font-medium bg-foreground/60 backdrop-blur-sm text-primary-foreground">
-                    {hasDatabaseBlogs ? featuredBlog!.category.toUpperCase() : "BEACHES"}
+                    {featuredArticle.category}
                   </span>
                 </div>
 
                 {/* Title */}
                 <div className="absolute bottom-6 left-6 right-6">
                   <h3 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
-                    {hasDatabaseBlogs ? featuredBlog!.title : staticFeaturedArticle.title}
+                    {featuredArticle.title}
                   </h3>
                 </div>
               </Link>
@@ -149,34 +167,30 @@ export function GetInspiredSection() {
 
             {/* Side Articles - Takes 2 columns */}
             <div className="lg:col-span-2 space-y-6">
-              {(hasDatabaseBlogs ? sideBlogs : staticSideArticles).map((article, index) => (
+              {sideArticles.map((article, index) => (
                 <motion.div
-                  key={hasDatabaseBlogs ? (article as BlogPost).id : index}
+                  key={index}
                   initial={{ opacity: 0, x: 50 }}
                   animate={contentVisible ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
                 >
                   <Link
-                    to={hasDatabaseBlogs ? `/blog/${(article as BlogPost).slug}` : (article as typeof staticSideArticles[0]).href}
+                    to={article.href}
                     className="flex gap-4 group"
                   >
                     <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
                       <img
-                        src={hasDatabaseBlogs 
-                          ? ((article as BlogPost).image_url || fallbackImages[index + 1]) 
-                          : (article as typeof staticSideArticles[0]).image}
-                        alt={hasDatabaseBlogs ? (article as BlogPost).title : (article as typeof staticSideArticles[0]).title}
+                        src={article.image}
+                        alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                     <div className="flex flex-col justify-center">
                       <span className="text-xs font-medium text-muted-foreground mb-1">
-                        {hasDatabaseBlogs 
-                          ? (article as BlogPost).category.toUpperCase() 
-                          : (article as typeof staticSideArticles[0]).category}
+                        {article.category}
                       </span>
                       <h4 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {hasDatabaseBlogs ? (article as BlogPost).title : (article as typeof staticSideArticles[0]).title}
+                        {article.title}
                       </h4>
                     </div>
                   </Link>
