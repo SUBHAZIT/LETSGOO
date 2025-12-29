@@ -75,9 +75,10 @@ export function GetInspiredSection() {
     fetchBlogs();
   }, []);
 
+  // Use static content as fallback when no database blogs
   const hasDatabaseBlogs = blogs.length > 0;
   const featuredBlog = hasDatabaseBlogs ? blogs[0] : null;
-  const sideBlogs = hasDatabaseBlogs ? blogs.slice(1, 4) : [];
+  const sideBlogs = hasDatabaseBlogs ? blogs.slice(1, 4) : staticSideArticles;
 
   return (
     <section className="py-20 bg-background overflow-hidden">
