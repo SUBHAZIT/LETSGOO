@@ -15,6 +15,7 @@ import Blog from "./pages/Blog";
 import Auth from "./pages/Auth";
 import MyTrips from "./pages/MyTrips";
 import SharedTrip from "./pages/SharedTrip";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-trips" element={<MyTrips />} />
             <Route path="/trip/:token" element={<SharedTrip />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
