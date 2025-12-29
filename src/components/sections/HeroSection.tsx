@@ -1,110 +1,115 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Search, MapPin, Calendar, Users, ArrowRight } from "lucide-react";
-import heroImage from "@/assets/hero-mountains.jpg";
+import { Link } from "react-router-dom";
+import { ArrowRight, Plane, Bus, Hotel, MapPin, Calendar } from "lucide-react";
+import heroImage from "@/assets/hero-backpacker.jpg";
+import itineraryKerala from "@/assets/itinerary-kerala.jpg";
 
 export function HeroSection() {
-  const [destination, setDestination] = useState("");
+  const [currentSlide] = useState(4);
+  const totalSlides = 7;
+
+  const quickLinks = [
+    { icon: Plane, label: "VISA INFO", href: "/visa" },
+    { icon: Bus, label: "TRANSPORT", href: "/transport" },
+  ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-end overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Majestic Himalayan mountains at sunset"
+          alt="Backpackers trekking in the Himalayas"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 gradient-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 via-foreground/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
       </div>
 
-      {/* Floating Elements */}
-      <div className="absolute top-1/4 right-[15%] w-20 h-20 rounded-full bg-accent/20 blur-3xl animate-float" />
-      <div className="absolute bottom-1/3 left-[10%] w-32 h-32 rounded-full bg-primary/20 blur-3xl animate-float" style={{ animationDelay: "-3s" }} />
-
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-20">
-        <div className="max-w-4xl">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-6 animate-fade-in">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-sm text-primary-foreground font-medium">
-              AI-Powered Trip Planning
-            </span>
+      <div className="relative z-10 container mx-auto px-4 pb-24 pt-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
+          {/* Left Content */}
+          <div className="text-primary-foreground">
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 animate-slide-up">
+              Find your pace
+              <br />
+              in India.
+            </h1>
+            <Link 
+              to="/destinations" 
+              className="inline-flex items-center gap-2 text-lg font-medium hover:gap-4 transition-all duration-300 group"
+            >
+              EXPLORE INDIA 
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
-          {/* Heading */}
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 leading-tight animate-slide-up">
-            Discover India's
-            <br />
-            <span className="text-gradient bg-gradient-to-r from-accent to-primary-glow bg-clip-text text-transparent">
-              Hidden Treasures
-            </span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            From the snow-capped Himalayas to tropical beaches. Plan your perfect 
-            adventure with AI, explore treks, and create unforgettable memories.
-          </p>
-
-          {/* Search Box */}
-          <div className="bg-card/95 backdrop-blur-xl rounded-2xl p-2 shadow-elevated animate-slide-up" style={{ animationDelay: "0.2s" }}>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-              {/* Destination */}
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
-                <MapPin className="w-5 h-5 text-accent" />
-                <div className="flex-1">
-                  <p className="text-xs text-muted-foreground font-medium">Where to?</p>
-                  <input
-                    type="text"
-                    placeholder="Search destinations"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                    className="w-full bg-transparent text-foreground placeholder:text-muted-foreground/70 focus:outline-none text-sm"
-                  />
-                </div>
+          {/* Right Cards Panel */}
+          <div className="hidden lg:block">
+            <div className="grid grid-cols-2 gap-3">
+              {/* Slide Counter */}
+              <div className="bg-foreground/30 backdrop-blur-sm rounded-2xl p-6 flex items-center">
+                <span className="text-primary-foreground text-xl font-bold">
+                  {currentSlide} / <span className="text-primary-foreground/50">{totalSlides}</span>
+                </span>
               </div>
 
-              {/* Dates */}
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
-                <Calendar className="w-5 h-5 text-accent" />
-                <div className="flex-1">
-                  <p className="text-xs text-muted-foreground font-medium">When?</p>
-                  <p className="text-sm text-foreground">Select dates</p>
-                </div>
+              {/* Featured Image */}
+              <div className="rounded-2xl overflow-hidden h-32">
+                <img 
+                  src={itineraryKerala} 
+                  alt="Kerala backwaters"
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              {/* Travelers */}
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer">
-                <Users className="w-5 h-5 text-accent" />
-                <div className="flex-1">
-                  <p className="text-xs text-muted-foreground font-medium">Who?</p>
-                  <p className="text-sm text-foreground">Add travelers</p>
-                </div>
-              </div>
+              {/* Quick Links Row */}
+              {quickLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="bg-card/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3 hover:bg-card transition-colors group"
+                >
+                  <link.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="font-medium text-sm text-card-foreground">{link.label}</span>
+                </Link>
+              ))}
 
-              {/* Search Button */}
-              <Button variant="hero" size="lg" className="h-full min-h-[56px]">
-                <Search className="w-5 h-5" />
-                Explore
-              </Button>
+              {/* Hotels Card */}
+              <Link 
+                to="/hotels"
+                className="relative rounded-2xl overflow-hidden h-28 group"
+              >
+                <img 
+                  src={itineraryKerala} 
+                  alt="Hotels"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-foreground/40" />
+                <div className="absolute bottom-4 left-4 flex items-center gap-2 text-primary-foreground">
+                  <Hotel className="w-4 h-4" />
+                  <span className="font-semibold">HOTELS</span>
+                </div>
+              </Link>
+
+              {/* Map Card */}
+              <Link 
+                to="/map"
+                className="bg-sand rounded-2xl p-4 flex flex-col justify-between h-28"
+              >
+                <MapPin className="w-5 h-5 text-sand-foreground" />
+                <span className="font-semibold text-sand-foreground">MAP</span>
+              </Link>
+
+              {/* Build Itinerary CTA */}
+              <Link 
+                to="/ai-planner"
+                className="col-span-2 bg-card/95 backdrop-blur-sm rounded-2xl p-4 flex items-center justify-center gap-3 hover:bg-card transition-colors group"
+              >
+                <Calendar className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <span className="font-medium text-card-foreground">BUILD YOUR ITINERARY</span>
+              </Link>
             </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="flex flex-wrap gap-8 mt-10 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            {[
-              { value: "500+", label: "Destinations" },
-              { value: "50K+", label: "Happy Travelers" },
-              { value: "100+", label: "Trek Routes" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-primary-foreground">
-                <p className="text-2xl md:text-3xl font-display font-bold">{stat.value}</p>
-                <p className="text-sm text-primary-foreground/70">{stat.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>

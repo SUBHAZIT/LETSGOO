@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Menu, X, MapPin, Compass, BookOpen, Sparkles, Globe, User, LogOut, FolderOpen, Shield } from "lucide-react";
+import { Menu, X, MapPin, Compass, BookOpen, Sparkles, User, LogOut, FolderOpen, Shield } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,11 +56,9 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center shadow-accent group-hover:scale-110 transition-transform duration-300">
-              <Globe className="w-5 h-5 text-accent-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-foreground">
-              Wanderlust
+            <span className="font-display text-2xl font-bold tracking-tight">
+              <span className="text-foreground">do</span>
+              <span className="text-primary">backpack</span>
             </span>
           </Link>
 

@@ -1,11 +1,9 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { DestinationsSection } from "@/components/sections/DestinationsSection";
-import { AITripPlannerSection } from "@/components/sections/AITripPlannerSection";
-import { CurrencyConverterSection } from "@/components/sections/CurrencyConverterSection";
-import { AdventuresSection } from "@/components/sections/AdventuresSection";
-import { TripPlannerFeatures } from "@/components/sections/TripPlannerFeatures";
-import { BlogSection } from "@/components/sections/BlogSection";
+import { ThingsToDoSection } from "@/components/sections/ThingsToDoSection";
+import { GetInspiredSection } from "@/components/sections/GetInspiredSection";
+import { DidYouKnowSection } from "@/components/sections/DidYouKnowSection";
+import { PlanYourTimeSection } from "@/components/sections/PlanYourTimeSection";
 import { Footer } from "@/components/layout/Footer";
 
 const Index = () => {
@@ -13,12 +11,10 @@ const Index = () => {
     <main className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
-      <DestinationsSection />
-      <AITripPlannerSection />
-      <AdventuresSection />
-      <CurrencyConverterSection />
-      <TripPlannerFeatures />
-      <BlogSection />
+      <ThingsToDoSection />
+      <GetInspiredSection />
+      <DidYouKnowSection />
+      <PlanYourTimeSection />
       <Footer />
     </main>
   );
