@@ -7,7 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Destinations from "./pages/Destinations";
+import DestinationDetail from "./pages/DestinationDetail";
 import Adventures from "./pages/Adventures";
+import AdventureDetail from "./pages/AdventureDetail";
 import AIPlanner from "./pages/AIPlanner";
 import Blog from "./pages/Blog";
 import Auth from "./pages/Auth";
@@ -26,7 +28,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/destinations" element={<Destinations />} />
+            <Route path="/destinations/:id" element={<DestinationDetail />} />
             <Route path="/adventures" element={<Adventures />} />
+            <Route path="/adventures/:id" element={<AdventureDetail />} />
             <Route path="/ai-planner" element={<AIPlanner />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/auth" element={<Auth />} />
