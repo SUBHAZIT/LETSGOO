@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash2, Loader2, Eye, EyeOff, Check, X, Clock } from "lucide-react";
 
 interface Blog {
   id: string;
@@ -22,6 +23,7 @@ interface Blog {
   author_name: string;
   read_time: string;
   is_published: boolean;
+  status: string;
   created_at: string;
 }
 
@@ -112,6 +114,7 @@ export function BlogManager() {
       author_id: user.id,
       author_name: user.email?.split("@")[0] || "Admin",
       published_at: formData.is_published ? new Date().toISOString() : null,
+      status: "approved", // Admin-created blogs are auto-approved
     };
 
     let error;
@@ -167,6 +170,44 @@ export function BlogManager() {
     }
   };
 
+  const handleApprove = async (blog: Blog) => {
+    const { error } = await supabase
+      .from("blogs")
+      .update({ 
+        status: "approved",
+        is_published: true,
+        published_at: new Date().toISOString()
+      })
+      .eq("id", blog.id);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to approve blog", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: "Blog approved and published!" });
+      fetchBlogs();
+    }
+  };
+
+  const handleReject = async (blog: Blog) => {
+    if (!confirm("Are you sure you want to reject this blog? The author will be notified.")) return;
+
+    const { error } = await supabase
+      .from("blogs")
+      .update({ status: "rejected" })
+      .eq("id", blog.id);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to reject blog", variant: "destructive" });
+    } else {
+      toast({ title: "Blog rejected", description: "The blog has been rejected." });
+      fetchBlogs();
+    }
+  };
+
+  const pendingBlogs = blogs.filter(b => b.status === "pending");
+  const approvedBlogs = blogs.filter(b => b.status === "approved");
+  const rejectedBlogs = blogs.filter(b => b.status === "rejected");
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -174,6 +215,62 @@ export function BlogManager() {
       </div>
     );
   }
+
+  const BlogCard = ({ blog, showApprovalActions = false }: { blog: Blog; showApprovalActions?: boolean }) => (
+    <Card key={blog.id}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-semibold truncate">{blog.title}</h3>
+              {blog.status === "pending" && (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-xs flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Pending
+                </span>
+              )}
+              {blog.status === "approved" && blog.is_published && (
+                <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 text-xs">Published</span>
+              )}
+              {blog.status === "approved" && !blog.is_published && (
+                <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-xs">Draft</span>
+              )}
+              {blog.status === "rejected" && (
+                <span className="px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 text-xs">Rejected</span>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{blog.excerpt}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              By {blog.author_name} • {blog.category} • {blog.read_time}
+            </p>
+          </div>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {showApprovalActions && blog.status === "pending" && (
+              <>
+                <Button variant="ghost" size="icon" onClick={() => handleApprove(blog)} className="text-green-600 hover:text-green-700 hover:bg-green-50">
+                  <Check className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleReject(blog)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                  <X className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+            {blog.status === "approved" && (
+              <Button variant="ghost" size="icon" onClick={() => togglePublish(blog)}>
+                {blog.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" onClick={() => openEditDialog(blog)}>
+              <Edit className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => handleDelete(blog.id)}>
+              <Trash2 className="w-4 h-4 text-destructive" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="space-y-6">
@@ -236,45 +333,69 @@ export function BlogManager() {
         </Dialog>
       </div>
 
-      {blogs.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No blogs yet. Create your first blog post!</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4">
-          {blogs.map((blog) => (
-            <Card key={blog.id}>
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{blog.title}</h3>
-                    {blog.is_published ? (
-                      <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 text-xs">Published</span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-xs">Draft</span>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">{blog.excerpt.substring(0, 100)}...</p>
-                  <p className="text-xs text-muted-foreground mt-1">{blog.category} • {blog.read_time}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => togglePublish(blog)}>
-                    {blog.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => openEditDialog(blog)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(blog.id)}>
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </div>
+      <Tabs defaultValue="pending" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="pending" className="relative">
+            Pending Review
+            {pendingBlogs.length > 0 && (
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500 text-white text-xs">
+                {pendingBlogs.length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="approved">Approved ({approvedBlogs.length})</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected ({rejectedBlogs.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pending" className="mt-6">
+          {pendingBlogs.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No pending blogs to review</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
+          ) : (
+            <div className="grid gap-4">
+              {pendingBlogs.map((blog) => (
+                <BlogCard key={blog.id} blog={blog} showApprovalActions />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="approved" className="mt-6">
+          {approvedBlogs.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No approved blogs yet. Create your first blog post!</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {approvedBlogs.map((blog) => (
+                <BlogCard key={blog.id} blog={blog} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="rejected" className="mt-6">
+          {rejectedBlogs.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No rejected blogs</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {rejectedBlogs.map((blog) => (
+                <BlogCard key={blog.id} blog={blog} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
