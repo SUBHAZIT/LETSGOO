@@ -1,154 +1,105 @@
 import { Link } from "react-router-dom";
-import { Globe, Mail, Phone, MapPin, Instagram, Twitter, Facebook, Youtube } from "lucide-react";
+import { ArrowUp, Instagram, Twitter, Facebook, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const footerLinks = {
-  destinations: [
-    { name: "North India", href: "/destinations/north" },
-    { name: "South India", href: "/destinations/south" },
-    { name: "East India", href: "/destinations/east" },
-    { name: "West India", href: "/destinations/west" },
-    { name: "Northeast", href: "/destinations/northeast" },
-  ],
-  adventures: [
-    { name: "Treks", href: "/adventures/treks" },
-    { name: "Beach Holidays", href: "/adventures/beaches" },
-    { name: "Wildlife Safari", href: "/adventures/safari" },
-    { name: "Cultural Tours", href: "/adventures/cultural" },
-    { name: "Honeymoon", href: "/adventures/honeymoon" },
-  ],
-  company: [
-    { name: "About Us", href: "/about" },
-    { name: "Blog", href: "/blog" },
-    { name: "Careers", href: "/careers" },
-    { name: "Contact", href: "/contact" },
-    { name: "Partners", href: "/partners" },
-  ],
-  support: [
-    { name: "Help Center", href: "/help" },
-    { name: "Safety", href: "/safety" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Cancellation", href: "/cancellation" },
-  ],
-};
+const navLinks = [
+  { name: "THINGS TO DO", href: "/adventures" },
+  { name: "WHERE TO GO", href: "/destinations" },
+  { name: "PLAN YOUR TRIP", href: "/ai-planner" },
+  { name: "BLOG", href: "/blog" },
+  { name: "CONTACT US", href: "/contact" },
+];
 
 const socialLinks = [
+  { icon: Facebook, href: "#", label: "Facebook" },
   { icon: Instagram, href: "#", label: "Instagram" },
   { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Facebook, href: "#", label: "Facebook" },
   { icon: Youtube, href: "#", label: "YouTube" },
 ];
 
 export function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-foreground text-background pt-16 pb-8">
-      <div className="container mx-auto px-4">
-        {/* Main Footer */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 pb-12 border-b border-background/10">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center">
-                <Globe className="w-5 h-5 text-accent-foreground" />
-              </div>
-              <span className="font-display text-xl font-bold text-background">
-                Wanderlust
-              </span>
-            </Link>
-            <p className="text-background/60 text-sm mb-6 max-w-xs">
-              Your AI-powered travel companion for exploring India and beyond. 
-              Plan, discover, and create unforgettable memories.
+    <footer className="bg-footer text-footer-foreground">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {/* Newsletter Section */}
+          <div className="bg-footer-muted rounded-2xl p-8">
+            <h3 className="font-display text-2xl font-bold mb-4">
+              Subscribe to the Newsletter
+            </h3>
+            <p className="text-footer-foreground/70 mb-6">
+              Sign up for exciting travel news, learn more about our events and get great travel ideas.
             </p>
-            <div className="space-y-3 text-sm text-background/60">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>hello@wanderlust.in</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>+91 98765 43210</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>Mumbai, India</span>
-              </div>
+            <Button 
+              variant="outline" 
+              className="border-footer-foreground/30 text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6"
+            >
+              SUBSCRIBE NEWSLETTER →
+            </Button>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="bg-footer-muted rounded-2xl p-8">
+            <nav className="space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="block text-footer-foreground/90 hover:text-footer-foreground font-medium transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Social & App Section */}
+          <div className="bg-footer-muted rounded-2xl p-8">
+            <h3 className="font-display text-2xl font-bold mb-6">Follow us</h3>
+            <div className="flex gap-3 mb-8">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  className="w-12 h-12 rounded-full bg-footer-foreground/10 flex items-center justify-center hover:bg-footer-foreground/20 transition-colors"
+                  aria-label={social.label}
+                >
+                  <social.icon className="w-5 h-5" />
+                </a>
+              ))}
             </div>
-          </div>
-
-          {/* Destinations */}
-          <div>
-            <h4 className="font-semibold text-background mb-4">Destinations</h4>
-            <ul className="space-y-2">
-              {footerLinks.destinations.map((link) => (
-                <li key={link.name}>
-                  <Link to={link.href} className="text-sm text-background/60 hover:text-accent transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Adventures */}
-          <div>
-            <h4 className="font-semibold text-background mb-4">Adventures</h4>
-            <ul className="space-y-2">
-              {footerLinks.adventures.map((link) => (
-                <li key={link.name}>
-                  <Link to={link.href} className="text-sm text-background/60 hover:text-accent transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="font-semibold text-background mb-4">Company</h4>
-            <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link to={link.href} className="text-sm text-background/60 hover:text-accent transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h4 className="font-semibold text-background mb-4">Support</h4>
-            <ul className="space-y-2">
-              {footerLinks.support.map((link) => (
-                <li key={link.name}>
-                  <Link to={link.href} className="text-sm text-background/60 hover:text-accent transition-colors">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="border-t border-footer-foreground/20 pt-6">
+              <h4 className="font-display text-xl font-bold mb-2">Download</h4>
+              <p className="text-footer-foreground/70">Our App</p>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Footer */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-background/60">
-            © {new Date().getFullYear()} Wanderlust. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-all duration-300"
-                aria-label={social.label}
-              >
-                <social.icon className="w-5 h-5" />
-              </a>
-            ))}
-          </div>
+        {/* Logo and Back to Top */}
+        <div className="flex items-center justify-between mt-12 pt-8 border-t border-footer-foreground/20">
+          <Link to="/" className="font-display text-2xl font-bold">
+            <span className="text-footer-foreground">do</span>
+            <span className="text-primary">backpack</span>
+          </Link>
+          <Button
+            onClick={scrollToTop}
+            variant="outline"
+            className="border-footer-foreground/30 text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 gap-2"
+          >
+            BACK TO TOP <ArrowUp className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Bottom Links */}
+        <div className="flex flex-wrap gap-6 mt-8 text-sm text-footer-foreground/60">
+          <Link to="/faq" className="hover:text-footer-foreground transition-colors">FAQs</Link>
+          <Link to="/privacy" className="hover:text-footer-foreground transition-colors">Privacy policy</Link>
+          <Link to="/terms" className="hover:text-footer-foreground transition-colors">Terms and conditions</Link>
+          <span className="ml-auto">Copyright © {new Date().getFullYear()} DOBACKPACK. All Rights Reserved.</span>
         </div>
       </div>
     </footer>
