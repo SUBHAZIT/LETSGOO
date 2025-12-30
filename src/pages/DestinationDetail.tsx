@@ -26,16 +26,22 @@ const fallbackImages: Record<string, string> = {
 };
 
 export default function DestinationDetail() {
-  const { id } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const [destination, setDestination] = useState<Destination | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDestination = async () => {
+      if (!slug) {
+        setDestination(null);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("destinations")
         .select("*")
-        .eq("slug", id)
+        .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
 
@@ -52,7 +58,7 @@ export default function DestinationDetail() {
     };
 
     fetchDestination();
-  }, [id]);
+  }, [slug]);
 
   const getImage = (dest: Destination) => {
     if (dest.image_url) return dest.image_url;
