@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  Sparkles, Send, Bot, User, MapPin, Calendar, Wallet, 
+  Sparkles, Send, User, MapPin, Calendar, Wallet, 
   Loader2, RotateCcw, Lightbulb, Plane, Hotel, Utensils, Save, FolderOpen
 } from "lucide-react";
 import {
@@ -21,6 +20,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import logoImage from "@/assets/letsgoo-logo.png";
 
 const suggestedPrompts = [
   "Plan a 7-day trip to Ladakh with adventure activities",
@@ -52,7 +52,7 @@ export default function AIPlanner() {
   const { toast } = useToast();
   
   const { messages, isLoading, error, sendMessage, clearChat } = useAIChat(
-    "Hello! I'm your AI travel companion. 🌏 Tell me about your dream trip — where you want to go, your interests, budget, and travel dates — and I'll create a personalized itinerary just for you!"
+    "Hello! I'm LETSGOO AI, your travel companion. 🌏 Tell me about your dream trip — where you want to go, your interests, budget, and travel dates — and I'll create a personalized itinerary just for you!"
   );
 
   const scrollToBottom = () => {
@@ -142,9 +142,9 @@ export default function AIPlanner() {
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
-      <main className="flex-1 pt-20 md:pt-24">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid lg:grid-cols-3 gap-8 h-[calc(100vh-12rem)]">
+      <main className="flex-1 pt-20 md:pt-24 pb-4">
+        <div className="container mx-auto px-4 py-4">
+          <div className="grid lg:grid-cols-3 gap-8 h-[calc(100vh-10rem)]">
             
             {/* Left Sidebar - Features */}
             <div className="hidden lg:block space-y-6">
@@ -214,11 +214,11 @@ export default function AIPlanner() {
               {/* Chat Header */}
               <div className="px-6 py-4 border-b border-border bg-secondary/30 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full gradient-accent flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-accent-foreground" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                    <img src={logoImage} alt="LETSGOO AI" className="w-8 h-8 object-contain" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Wanderlust AI</p>
+                    <p className="font-semibold text-foreground">LETSGOO AI</p>
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <span className="w-2 h-2 rounded-full bg-green-500" />
                       Ready to plan your adventure
@@ -247,16 +247,16 @@ export default function AIPlanner() {
                     className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
                         msg.role === "user"
                           ? "bg-primary text-primary-foreground"
-                          : "gradient-accent text-accent-foreground"
+                          : "bg-primary/10"
                       }`}
                     >
                       {msg.role === "user" ? (
                         <User className="w-4 h-4" />
                       ) : (
-                        <Bot className="w-4 h-4" />
+                        <img src={logoImage} alt="LETSGOO AI" className="w-6 h-6 object-contain" />
                       )}
                     </div>
                     <div
@@ -273,8 +273,8 @@ export default function AIPlanner() {
                 
                 {isLoading && (
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full gradient-accent flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-accent-foreground" />
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                      <img src={logoImage} alt="LETSGOO AI" className="w-6 h-6 object-contain" />
                     </div>
                     <div className="bg-secondary px-4 py-3 rounded-2xl rounded-bl-none">
                       <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
@@ -406,8 +406,6 @@ export default function AIPlanner() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Footer />
     </div>
   );
 }
