@@ -57,8 +57,8 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <span className="font-display text-2xl font-bold tracking-tight">
-              <span className="text-white">DO</span>
-              <span className="text-primary">BACKPACK</span>
+              <span className="text-white">LETS</span>
+              <span className="text-primary">GOO</span>
             </span>
           </Link>
 

@@ -43,11 +43,11 @@ export default function Terms() {
             <div className="bg-card border border-border rounded-xl p-8 mb-8">
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">1. Agreement to Terms</h2>
               <p>
-                By accessing or using DoBackpack's website and services, you agree to be bound by these Terms and 
+                By accessing or using LetsGoo's website and services, you agree to be bound by these Terms and 
                 Conditions. If you disagree with any part of these terms, you may not access our services.
               </p>
               <p>
-                These Terms constitute a legally binding agreement between you and DoBackpack regarding your use 
+                These Terms constitute a legally binding agreement between you and LetsGoo regarding your use 
                 of our travel planning platform, booking services, and related offerings.
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function Terms() {
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">7. Intellectual Property</h2>
               <p>
                 All content on our website, including text, graphics, logos, images, and software, is the property 
-                of DoBackpack or its content suppliers and is protected by intellectual property laws.
+                of LetsGoo or its content suppliers and is protected by intellectual property laws.
               </p>
               <p className="mt-4">
                 You may not reproduce, distribute, modify, or create derivative works from our content without 
@@ -172,7 +172,7 @@ export default function Terms() {
             <div className="bg-card border border-border rounded-xl p-8 mb-8">
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">8. Limitation of Liability</h2>
               <p>
-                To the maximum extent permitted by law, DoBackpack shall not be liable for:
+                To the maximum extent permitted by law, LetsGoo shall not be liable for:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Indirect, incidental, special, or consequential damages</li>
@@ -190,7 +190,7 @@ export default function Terms() {
             <div className="bg-card border border-border rounded-xl p-8 mb-8">
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">9. Indemnification</h2>
               <p>
-                You agree to indemnify and hold harmless DoBackpack, its officers, directors, employees, and 
+                You agree to indemnify and hold harmless LetsGoo, its officers, directors, employees, and 
                 agents from any claims, damages, losses, or expenses arising from:
               </p>
               <ul className="list-disc pl-6 space-y-2">
@@ -229,8 +229,8 @@ export default function Terms() {
                 For questions about these Terms and Conditions, please contact us:
               </p>
               <div className="mt-4 p-4 bg-muted rounded-lg">
-                <p className="font-semibold text-foreground">DoBackpack Legal</p>
-                <p>Email: legal@dobackpack.com</p>
+                <p className="font-semibold text-foreground">LetsGoo Legal</p>
+                <p>Email: legal@letsgoo.com</p>
                 <p>Address: Mumbai, Maharashtra, India</p>
               </div>
             </div>

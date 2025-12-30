@@ -121,7 +121,7 @@ export default function Auth() {
         } else {
           toast({
             title: "Account created!",
-            description: "Welcome to DOBACKPACK! You're now logged in.",
+            description: "Welcome to LETSGOO! You're now logged in.",
           });
           navigate("/");
         }
@@ -164,7 +164,7 @@ export default function Auth() {
   const getTitle = () => {
     switch (mode) {
       case "login": return "Welcome Back";
-      case "signup": return "Join DOBACKPACK";
+      case "signup": return "Join LETSGOO";
       case "forgot": return "Reset Password";
       case "reset": return "New Password";
     }

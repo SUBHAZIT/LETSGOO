@@ -176,8 +176,8 @@ export function Footer() {
           className="flex items-center justify-between mt-12 pt-8 border-t border-footer-foreground/20"
         >
           <Link to="/" className="font-display text-2xl font-bold">
-            <span className="text-footer-foreground">do</span>
-            <span className="text-primary">backpack</span>
+            <span className="text-footer-foreground">LETS</span>
+            <span className="text-primary">GOO</span>
           </Link>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
@@ -200,7 +200,7 @@ export function Footer() {
           <Link to="/faq" className="hover:text-footer-foreground transition-colors">FAQs</Link>
           <Link to="/privacy" className="hover:text-footer-foreground transition-colors">Privacy policy</Link>
           <Link to="/terms" className="hover:text-footer-foreground transition-colors">Terms and conditions</Link>
-          <span className="ml-auto">Copyright © {new Date().getFullYear()} DOBACKPACK. All Rights Reserved.</span>
+          <span className="ml-auto">Copyright © {new Date().getFullYear()} LETSGOO. All Rights Reserved.</span>
         </motion.div>
       </div>
     </footer>
