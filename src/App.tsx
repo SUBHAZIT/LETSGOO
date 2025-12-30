@@ -14,6 +14,7 @@ import AIPlanner from "./pages/AIPlanner";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
 import WriteBlog from "./pages/WriteBlog";
+import MySubmissions from "./pages/MySubmissions";
 import Auth from "./pages/Auth";
 import MyTrips from "./pages/MyTrips";
 import SharedTrip from "./pages/SharedTrip";
@@ -44,6 +45,8 @@ const App = () => (
             <Route path="/blog/write" element={<WriteBlog />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/write-blog" element={<WriteBlog />} />
+            <Route path="/my-submissions" element={<MySubmissions />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/my-trips" element={<MyTrips />} />
             <Route path="/trip/:shareToken" element={<SharedTrip />} />
             <Route path="/admin" element={<Admin />} />

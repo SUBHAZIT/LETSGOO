@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BlogImageUploader } from "@/components/BlogImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Loader2, Eye, EyeOff, Check, X, Clock } from "lucide-react";
 
@@ -308,10 +309,13 @@ export function BlogManager() {
                   <Input value={formData.read_time} onChange={(e) => setFormData({ ...formData, read_time: e.target.value })} />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Image URL</Label>
-                <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
-              </div>
+              {user && (
+                <BlogImageUploader
+                  value={formData.image_url}
+                  onChange={(url) => setFormData({ ...formData, image_url: url })}
+                  userId={user.id}
+                />
+              )}
               <div className="space-y-2">
                 <Label>Excerpt</Label>
                 <Textarea value={formData.excerpt} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} rows={2} required />

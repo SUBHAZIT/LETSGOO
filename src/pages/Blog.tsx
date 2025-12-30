@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   BookOpen, Clock, User, Search, ArrowRight, Calendar, 
-  TrendingUp, Loader2, PenSquare
+  TrendingUp, Loader2, PenSquare, FileText
 } from "lucide-react";
 
 import heroImage from "@/assets/hero-mountains.jpg";
@@ -122,11 +122,17 @@ export default function Blog() {
 
             {/* Write Blog CTA */}
             {user && (
-              <div className="mt-6">
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <Link to="/write-blog">
                   <Button variant="outline" className="gap-2">
                     <PenSquare className="w-4 h-4" />
                     Write a Blog Post
+                  </Button>
+                </Link>
+                <Link to="/my-submissions">
+                  <Button variant="ghost" className="gap-2">
+                    <FileText className="w-4 h-4" />
+                    My Submissions
                   </Button>
                 </Link>
               </div>
