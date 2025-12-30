@@ -43,6 +43,7 @@ export default function AdventureDetail() {
         .from("adventures")
         .select("*")
         .eq("slug", id)
+        .eq("is_published", true)
         .maybeSingle();
 
       if (error || !data) {

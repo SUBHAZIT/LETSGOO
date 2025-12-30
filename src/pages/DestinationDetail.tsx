@@ -36,6 +36,7 @@ export default function DestinationDetail() {
         .from("destinations")
         .select("*")
         .eq("slug", id)
+        .eq("is_published", true)
         .maybeSingle();
 
       if (error || !data) {

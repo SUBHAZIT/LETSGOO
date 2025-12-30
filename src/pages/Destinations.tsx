@@ -144,15 +144,13 @@ export default function Destinations() {
 
       if (error) {
         console.error("Error fetching destinations:", error);
-        setDestinations(staticDestinations);
-      } else if (data && data.length > 0) {
-        const typedData = data.map(d => ({
+        setDestinations([]);
+      } else {
+        const typedData = (data || []).map(d => ({
           ...d,
           attractions: (d.attractions as unknown) as { name: string; description: string }[],
         }));
         setDestinations(typedData);
-      } else {
-        setDestinations(staticDestinations);
       }
       setLoading(false);
     };
