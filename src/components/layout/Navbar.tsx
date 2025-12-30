@@ -81,7 +81,7 @@ export function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2 border-white/30 text-white hover:bg-white/10">
+                  <Button variant="outline" size="sm" className="gap-2 border-white/30 bg-transparent text-white hover:bg-white/10">
                     <User className="w-4 h-4" />
                     Account
                   </Button>
