@@ -149,15 +149,13 @@ export default function Adventures() {
 
       if (error) {
         console.error("Error fetching adventures:", error);
-        setAdventures(staticAdventures);
-      } else if (data && data.length > 0) {
-        const typedData = data.map(a => ({
+        setAdventures([]);
+      } else {
+        const typedData = (data || []).map(a => ({
           ...a,
           itinerary: (a.itinerary as unknown) as { day: number; title: string; description: string }[],
         }));
         setAdventures(typedData);
-      } else {
-        setAdventures(staticAdventures);
       }
       setLoading(false);
     };
