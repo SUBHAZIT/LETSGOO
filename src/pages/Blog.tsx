@@ -123,7 +123,7 @@ export default function Blog() {
             {/* Write Blog CTA */}
             {user && (
               <div className="mt-6">
-                <Link to="/blog/write">
+                <Link to="/write-blog">
                   <Button variant="outline" className="gap-2">
                     <PenSquare className="w-4 h-4" />
                     Write a Blog Post
@@ -282,7 +282,7 @@ export default function Blog() {
                   <h3 className="text-xl font-semibold text-foreground mb-2">No articles yet</h3>
                   <p className="text-muted-foreground mb-6">Be the first to share your travel story!</p>
                   {user && (
-                    <Link to="/blog/write">
+                    <Link to="/write-blog">
                       <Button variant="hero">
                         <PenSquare className="w-4 h-4 mr-2" />
                         Write a Blog Post

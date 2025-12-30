@@ -41,9 +41,9 @@ const App = () => (
             <Route path="/adventures/:slug" element={<AdventureDetail />} />
             <Route path="/ai-planner" element={<AIPlanner />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/write" element={<WriteBlog />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/write-blog" element={<WriteBlog />} />
-            <Route path="/auth" element={<Auth />} />
             <Route path="/my-trips" element={<MyTrips />} />
             <Route path="/trip/:shareToken" element={<SharedTrip />} />
             <Route path="/admin" element={<Admin />} />
