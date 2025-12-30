@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BlogImageUploader } from "@/components/BlogImageUploader";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -188,18 +189,13 @@ export default function WriteBlog() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image_url">Cover Image URL (optional)</Label>
-                <Input
-                  id="image_url"
+              {user && (
+                <BlogImageUploader
                   value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
+                  onChange={(url) => setFormData({ ...formData, image_url: url })}
+                  userId={user.id}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Paste a link to an image for your blog cover
-                </p>
-              </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="excerpt">Short Description *</Label>
