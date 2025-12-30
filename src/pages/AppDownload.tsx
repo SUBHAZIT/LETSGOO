@@ -3,9 +3,82 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Hammer, Wrench, HardHat, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// Generate random particles
+const particles = Array.from({ length: 20 }, (_, i) => ({
+  id: i,
+  size: Math.random() * 6 + 2,
+  x: Math.random() * 100,
+  delay: Math.random() * 5,
+  duration: Math.random() * 10 + 10,
+  opacity: Math.random() * 0.5 + 0.1,
+}));
+
+const dustParticles = Array.from({ length: 15 }, (_, i) => ({
+  id: i,
+  size: Math.random() * 4 + 1,
+  startX: 40 + Math.random() * 20,
+  delay: Math.random() * 3,
+  duration: Math.random() * 3 + 2,
+}));
+
 const AppDownload = () => {
   return (
     <div className="min-h-screen bg-footer text-footer-foreground flex flex-col overflow-hidden relative">
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute rounded-full bg-primary/30"
+            style={{
+              width: particle.size,
+              height: particle.size,
+              left: `${particle.x}%`,
+              bottom: -20,
+            }}
+            animate={{
+              y: [0, -window.innerHeight - 100],
+              x: [0, Math.sin(particle.id) * 50],
+              opacity: [0, particle.opacity, particle.opacity, 0],
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              delay: particle.delay,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Construction Dust Particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {dustParticles.map((dust) => (
+          <motion.div
+            key={`dust-${dust.id}`}
+            className="absolute rounded-full bg-yellow-400/40"
+            style={{
+              width: dust.size,
+              height: dust.size,
+              left: `${dust.startX}%`,
+              top: "45%",
+            }}
+            animate={{
+              y: [0, -30 - Math.random() * 40, 20],
+              x: [0, (dust.id % 2 === 0 ? 1 : -1) * (20 + Math.random() * 30), 0],
+              opacity: [0, 0.8, 0],
+              scale: [0.5, 1.2, 0.3],
+            }}
+            transition={{
+              duration: dust.duration,
+              repeat: Infinity,
+              delay: dust.delay,
+              ease: "easeOut",
+            }}
+          />
+        ))}
+      </div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
