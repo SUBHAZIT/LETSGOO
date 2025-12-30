@@ -162,10 +162,10 @@ export function Footer() {
                 </motion.a>
               ))}
             </div>
-            <div className="border-t border-footer-foreground/20 pt-6">
+            <Link to="/app-download" className="block border-t border-footer-foreground/20 pt-6 hover:opacity-80 transition-opacity">
               <h4 className="font-display text-xl font-bold mb-2">Download</h4>
               <p className="text-footer-foreground/70">Our App</p>
-            </div>
+            </Link>
           </motion.div>
         </motion.div>
 
