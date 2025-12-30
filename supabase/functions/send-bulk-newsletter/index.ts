@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
@@ -14,7 +15,7 @@ const corsHeaders = {
 interface BulkEmailRequest {
   subject: string;
   content: string;
-  subscriberIds?: string[]; // Optional: send to specific subscribers
+  subscriberIds?: string[];
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -23,24 +24,62 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Get the authorization header
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authorization required" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Create client with user's auth token to check admin role
+    const userClient = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    // Get current user
+    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    if (userError || !user) {
+      console.error("Auth error:", userError);
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Check if user is admin using service role
+    const serviceClient = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+    const { data: roleData, error: roleError } = await serviceClient
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (roleError || !roleData) {
+      console.error("Role check failed:", roleError);
+      return new Response(
+        JSON.stringify({ error: "Admin access required" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("Admin verified:", user.email);
+
     const { subject, content, subscriberIds }: BulkEmailRequest = await req.json();
 
     if (!subject || !content) {
       return new Response(
         JSON.stringify({ error: "Subject and content are required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
     console.log("Processing bulk newsletter with subject:", subject);
 
-    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
-
     // Get active subscribers
-    let query = supabase
+    let query = serviceClient
       .from("newsletter_subscribers")
       .select("id, email, unsubscribe_token")
       .eq("is_active", true);
@@ -59,10 +98,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!subscribers || subscribers.length === 0) {
       return new Response(
         JSON.stringify({ success: true, sent: 0, message: "No active subscribers found" }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
@@ -72,7 +108,6 @@ const handler = async (req: Request): Promise<Response> => {
     let failCount = 0;
     const errors: string[] = [];
 
-    // Send emails one by one (Resend free tier limitation)
     for (const subscriber of subscribers) {
       const unsubscribeUrl = `${SUPABASE_URL}/functions/v1/newsletter-unsubscribe?token=${subscriber.unsubscribe_token}`;
       
@@ -153,7 +188,6 @@ const handler = async (req: Request): Promise<Response> => {
         errors.push(`${subscriber.email}: ${err.message}`);
       }
 
-      // Small delay to avoid rate limiting
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
@@ -167,19 +201,13 @@ const handler = async (req: Request): Promise<Response> => {
         total: subscribers.length,
         errors: errors.length > 0 ? errors : undefined
       }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error: any) {
     console.error("Error in send-bulk-newsletter function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 };
