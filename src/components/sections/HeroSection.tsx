@@ -5,7 +5,6 @@ import { ArrowRight, Calendar } from "lucide-react";
 import heroVideo from "@/assets/hero-video.mp4";
 import itineraryKerala from "@/assets/itinerary-kerala.jpg";
 import itineraryLadakh from "@/assets/itinerary-ladakh.jpg";
-import itineraryRajasthan from "@/assets/itinerary-rajasthan.jpg";
 
 export function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -79,18 +78,6 @@ export function HeroSection() {
                 />
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.7 }}
-                className="col-span-2 rounded-2xl overflow-hidden h-24 shadow-lg"
-              >
-                <img
-                  src={itineraryRajasthan}
-                  alt="Rajasthan palace"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </motion.div>
 
               {/* Build Itinerary CTA */}
               <motion.div
