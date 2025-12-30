@@ -1,8 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUp, Instagram, Twitter, Facebook, Youtube } from "lucide-react";
+import { ArrowUp, Instagram, Twitter, Facebook, Youtube, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const emailSchema = z.string().trim().email({ message: "Please enter a valid email address" });
 
 const navLinks = [
   { name: "THINGS TO DO", href: "/adventures" },
@@ -21,9 +27,37 @@ const socialLinks = [
 
 export function Footer() {
   const { ref, isVisible } = useScrollAnimation();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    const result = emailSchema.safeParse(email);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast({
+      title: "Subscribed!",
+      description: "Thank you for subscribing to our newsletter.",
+    });
+    
+    setEmail("");
+    setIsSubmitting(false);
   };
 
   return (
@@ -48,12 +82,32 @@ export function Footer() {
             <p className="text-footer-foreground/70 mb-6">
               Sign up for exciting travel news, learn more about our events and get great travel ideas.
             </p>
-            <Button 
-              variant="outline" 
-              className="border-footer-foreground/30 bg-transparent text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 whitespace-nowrap"
-            >
-              SUBSCRIBE NEWSLETTER →
-            </Button>
+            <form onSubmit={handleSubscribe} className="space-y-3">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError("");
+                }}
+                className="bg-footer-foreground/10 border-footer-foreground/20 text-footer-foreground placeholder:text-footer-foreground/50 rounded-full px-4"
+              />
+              {error && (
+                <p className="text-red-400 text-sm">{error}</p>
+              )}
+              <Button 
+                type="submit"
+                variant="outline" 
+                disabled={isSubmitting}
+                className="border-footer-foreground/30 bg-transparent text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 whitespace-nowrap w-full"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : null}
+                {isSubmitting ? "SUBSCRIBING..." : "SUBSCRIBE NEWSLETTER →"}
+              </Button>
+            </form>
           </motion.div>
 
           {/* Navigation Links */}
