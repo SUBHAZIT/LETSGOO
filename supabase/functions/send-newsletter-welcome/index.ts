@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
                         <table role="presentation" style="width: 100%; border-collapse: collapse;">
                           <tr>
                             <td align="center">
-                              <a href="https://letsgoo.lovable.app" style="display: inline-block; background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 50px; font-size: 16px; font-weight: bold;">
+                              <a href="https://letsgoo.world" style="display: inline-block; background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 50px; font-size: 16px; font-weight: bold;">
                                 Explore Now →
                               </a>
                             </td>
