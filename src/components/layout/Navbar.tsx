@@ -64,7 +64,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-1 flex-shrink-0">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -78,7 +78,7 @@ export function Navbar() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -124,7 +124,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
+            className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors text-white"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -132,7 +132,7 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 animate-fade-in bg-black">
+          <div className="lg:hidden pb-4 animate-fade-in bg-black">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
