@@ -63,12 +63,12 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1 flex-shrink-0">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 font-medium"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 font-medium text-sm whitespace-nowrap"
               >
                 <link.icon className="w-4 h-4" />
                 {link.name}
@@ -77,7 +77,7 @@ export function Navbar() {
           </div>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
