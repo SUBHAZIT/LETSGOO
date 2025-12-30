@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import letsgooLogo from "@/assets/letsgoo-logo.png";
 
 const emailSchema = z.string().trim().email({ message: "Please enter a valid email address" });
 
@@ -175,7 +176,8 @@ export function Footer() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="flex items-center justify-between mt-12 pt-8 border-t border-footer-foreground/20"
         >
-          <Link to="/" className="font-display text-2xl font-bold">
+          <Link to="/" className="flex items-center gap-2 font-display text-2xl font-bold">
+            <img src={letsgooLogo} alt="LETSGOO" className="h-10 w-10" />
             <span className="text-footer-foreground">LETS</span>
             <span className="text-primary">GOO</span>
           </Link>

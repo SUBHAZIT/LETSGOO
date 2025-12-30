@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import letsgooLogo from "@/assets/letsgoo-logo.png";
 const navLinks = [
   { name: "Destinations", href: "/destinations", icon: MapPin },
   { name: "AI Planner", href: "/ai-planner", icon: Sparkles },
@@ -56,6 +56,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
+            <img src={letsgooLogo} alt="LETSGOO" className="h-10 w-10" />
             <span className="font-display text-2xl font-bold tracking-tight">
               <span className="text-white">LETS</span>
               <span className="text-primary">GOO</span>
