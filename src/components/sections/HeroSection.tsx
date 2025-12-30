@@ -30,7 +30,7 @@ export function HeroSection() {
         <video ref={videoRef} autoPlay loop muted playsInline className="w-full h-full object-cover">
           <source src={heroVideo} type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
       </div>
 
       {/* Mute Button */}
@@ -51,7 +51,7 @@ export function HeroSection() {
         }} transition={{
           duration: 0.8,
           ease: "easeOut"
-        }} className="text-primary-foreground">
+        }} className="text-white">
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
               Find your peace
               <br />
@@ -86,9 +86,9 @@ export function HeroSection() {
 
               {/* Quick Links Row */}
               {quickLinks.map((link, index) => (
-                <Link key={index} to={link.href} className="rounded-xl bg-background/10 backdrop-blur-sm p-3 flex items-center gap-2 hover:bg-background/20 transition-colors">
-                  <link.icon className="w-4 h-4 text-primary-foreground" />
-                  <span className="text-sm text-primary-foreground">{link.label}</span>
+                <Link key={index} to={link.href} className="rounded-xl bg-white/10 backdrop-blur-sm p-3 flex items-center gap-2 hover:bg-white/20 transition-colors">
+                  <link.icon className="w-4 h-4 text-white" />
+                  <span className="text-sm text-white">{link.label}</span>
                 </Link>
               ))}
 
@@ -128,8 +128,8 @@ export function HeroSection() {
       duration: 1,
       delay: 1.2
     }} className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex items-start justify-center p-2">
-          <div className="w-1 h-2 rounded-full bg-primary-foreground/50 animate-pulse" />
+        <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
+          <div className="w-1 h-2 rounded-full bg-white/50 animate-pulse" />
         </div>
       </motion.div>
     </section>;
