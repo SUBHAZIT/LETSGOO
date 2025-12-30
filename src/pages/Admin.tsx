@@ -9,12 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LayoutDashboard, FileText, MapPin, Mountain, 
-  Plus, Loader2, Shield, MessageSquare
+  Plus, Loader2, Shield, MessageSquare, Mail
 } from "lucide-react";
 import { BlogManager } from "@/components/admin/BlogManager";
 import { DestinationManager } from "@/components/admin/DestinationManager";
 import { AdventureManager } from "@/components/admin/AdventureManager";
 import { ContactInquiriesManager } from "@/components/admin/ContactInquiriesManager";
+import { NewsletterManager } from "@/components/admin/NewsletterManager";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -96,7 +97,7 @@ export default function Admin() {
 
           {/* Tabs */}
           <Tabs defaultValue="blogs" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+            <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
               <TabsTrigger value="blogs" className="gap-2">
                 <FileText className="w-4 h-4" />
                 Blogs
@@ -112,6 +113,10 @@ export default function Admin() {
               <TabsTrigger value="inquiries" className="gap-2">
                 <MessageSquare className="w-4 h-4" />
                 Inquiries
+              </TabsTrigger>
+              <TabsTrigger value="newsletter" className="gap-2">
+                <Mail className="w-4 h-4" />
+                Newsletter
               </TabsTrigger>
             </TabsList>
 
@@ -129,6 +134,10 @@ export default function Admin() {
 
             <TabsContent value="inquiries">
               <ContactInquiriesManager />
+            </TabsContent>
+
+            <TabsContent value="newsletter">
+              <NewsletterManager />
             </TabsContent>
           </Tabs>
         </div>

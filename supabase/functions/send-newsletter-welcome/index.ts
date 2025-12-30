@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +16,6 @@ interface NewsletterRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -32,8 +34,49 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Sending welcome email to:", email);
+    console.log("Processing newsletter subscription for:", email);
 
+    // Initialize Supabase client with service role
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+
+    // Check if email already exists
+    const { data: existingSubscriber } = await supabase
+      .from("newsletter_subscribers")
+      .select("id, is_active")
+      .eq("email", email.toLowerCase().trim())
+      .maybeSingle();
+
+    if (existingSubscriber) {
+      if (existingSubscriber.is_active) {
+        return new Response(
+          JSON.stringify({ success: true, message: "Already subscribed" }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      } else {
+        // Reactivate subscription
+        await supabase
+          .from("newsletter_subscribers")
+          .update({ is_active: true, unsubscribed_at: null })
+          .eq("id", existingSubscriber.id);
+      }
+    } else {
+      // Insert new subscriber
+      const { error: insertError } = await supabase
+        .from("newsletter_subscribers")
+        .insert({ email: email.toLowerCase().trim() });
+
+      if (insertError) {
+        console.error("Error inserting subscriber:", insertError);
+        throw new Error("Failed to save subscription");
+      }
+    }
+
+    console.log("Subscriber saved, sending welcome email to:", email);
+
+    // Send welcome email
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -56,8 +99,6 @@ const handler = async (req: Request): Promise<Response> => {
               <tr>
                 <td align="center" style="padding: 40px 0;">
                   <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    
-                    <!-- Header -->
                     <tr>
                       <td style="background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%); padding: 40px 30px; text-align: center;">
                         <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: bold;">
@@ -68,8 +109,6 @@ const handler = async (req: Request): Promise<Response> => {
                         </p>
                       </td>
                     </tr>
-                    
-                    <!-- Main Content -->
                     <tr>
                       <td style="padding: 40px 30px;">
                         <h2 style="color: #1a1a1a; margin: 0 0 20px 0; font-size: 24px;">
@@ -91,8 +130,6 @@ const handler = async (req: Request): Promise<Response> => {
                         <p style="color: #666666; margin: 0 0 30px 0; font-size: 16px; line-height: 1.6;">
                           Start exploring now and plan your next unforgettable journey with us!
                         </p>
-                        
-                        <!-- CTA Button -->
                         <table role="presentation" style="width: 100%; border-collapse: collapse;">
                           <tr>
                             <td align="center">
@@ -104,8 +141,6 @@ const handler = async (req: Request): Promise<Response> => {
                         </table>
                       </td>
                     </tr>
-                    
-                    <!-- Footer -->
                     <tr>
                       <td style="background-color: #1a1a1a; padding: 30px; text-align: center;">
                         <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">
@@ -119,7 +154,6 @@ const handler = async (req: Request): Promise<Response> => {
                         </p>
                       </td>
                     </tr>
-                    
                   </table>
                 </td>
               </tr>
@@ -133,18 +167,14 @@ const handler = async (req: Request): Promise<Response> => {
     if (!res.ok) {
       const errorData = await res.text();
       console.error("Resend API error:", errorData);
-      throw new Error(`Failed to send email: ${errorData}`);
+      // Still return success since subscription was saved
+    } else {
+      console.log("Welcome email sent successfully");
     }
 
-    const data = await res.json();
-    console.log("Email sent successfully:", data);
-
-    return new Response(JSON.stringify({ success: true, data }), {
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
     console.error("Error in send-newsletter-welcome function:", error);
