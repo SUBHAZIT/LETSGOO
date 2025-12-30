@@ -85,7 +85,12 @@ export function HeroSection() {
               </div>
 
               {/* Quick Links Row */}
-              {quickLinks.map((link, index) => {})}
+              {quickLinks.map((link, index) => (
+                <Link key={index} to={link.href} className="rounded-xl bg-background/10 backdrop-blur-sm p-3 flex items-center gap-2 hover:bg-background/20 transition-colors">
+                  <link.icon className="w-4 h-4 text-primary-foreground" />
+                  <span className="text-sm text-primary-foreground">{link.label}</span>
+                </Link>
+              ))}
 
               {/* Hotels Card */}
               

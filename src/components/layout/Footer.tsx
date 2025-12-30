@@ -50,7 +50,7 @@ export function Footer() {
             </p>
             <Button 
               variant="outline" 
-              className="border-footer-foreground/30 text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6"
+              className="border-footer-foreground/30 bg-transparent text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 whitespace-nowrap"
             >
               SUBSCRIBE NEWSLETTER →
             </Button>
@@ -129,7 +129,7 @@ export function Footer() {
             <Button
               onClick={scrollToTop}
               variant="outline"
-              className="border-footer-foreground/30 text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 gap-2"
+              className="border-footer-foreground/30 bg-transparent text-footer-foreground hover:bg-footer-foreground hover:text-footer rounded-full px-6 gap-2 whitespace-nowrap"
             >
               BACK TO TOP <ArrowUp className="w-4 h-4" />
             </Button>
