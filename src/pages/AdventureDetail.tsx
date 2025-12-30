@@ -33,16 +33,22 @@ const difficultyColors: Record<string, string> = {
 };
 
 export default function AdventureDetail() {
-  const { id } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const [adventure, setAdventure] = useState<Adventure | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAdventure = async () => {
+      if (!slug) {
+        setAdventure(null);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("adventures")
         .select("*")
-        .eq("slug", id)
+        .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
 
@@ -59,7 +65,7 @@ export default function AdventureDetail() {
     };
 
     fetchAdventure();
-  }, [id]);
+  }, [slug]);
 
   const getImage = (adv: Adventure) => {
     if (adv.image_url) return adv.image_url;
