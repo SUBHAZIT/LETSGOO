@@ -130,8 +130,8 @@ export function GetInspiredSection() {
           <div ref={contentRef} className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Featured Article - Takes 3 columns */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={contentVisible ? { opacity: 1, x: 0 } : {}}
+              initial={{ opacity: 1, x: 0 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="lg:col-span-3"
             >
@@ -170,9 +170,9 @@ export function GetInspiredSection() {
               {sideArticles.map((article, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={contentVisible ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
+                  initial={{ opacity: 1, x: 0 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
                 >
                   <Link
                     to={article.href}
