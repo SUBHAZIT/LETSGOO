@@ -46,7 +46,8 @@ export function DidYouKnowSection() {
         <img
           src={didYouKnowBg}
           alt="Beautiful Indian rangoli art"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
+          style={{ objectPosition: 'center center' }}
         />
         <div className="absolute inset-0 bg-foreground/30" />
       </div>
