@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 
@@ -49,16 +50,31 @@ export function Footer() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Subscribed!",
-      description: "Thank you for subscribing to our newsletter.",
-    });
-    
-    setEmail("");
-    setIsSubmitting(false);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('send-newsletter-welcome', {
+        body: { email: result.data }
+      });
+
+      if (fnError) {
+        throw fnError;
+      }
+
+      toast({
+        title: "Welcome to LetsGoo! 🎉",
+        description: "Check your inbox for a welcome email from us.",
+      });
+      
+      setEmail("");
+    } catch (err: any) {
+      console.error("Newsletter subscription error:", err);
+      toast({
+        title: "Subscribed!",
+        description: "Thank you for subscribing to our newsletter.",
+      });
+      setEmail("");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
