@@ -6,7 +6,28 @@ import heroVideo from "@/assets/hero-video.mp4";
 import itineraryKerala from "@/assets/itinerary-kerala.jpg";
 import itineraryLadakh from "@/assets/itinerary-ladakh.jpg";
 
-const destinations = ["Kerala", "Ladakh", "Rajasthan", "Goa", "Himachal"];
+const destinations = [
+  "Kerala",
+  "Ladakh", 
+  "Rajasthan",
+  "Goa",
+  "Himachal",
+  "Varanasi",
+  "Jaipur",
+  "Mumbai",
+  "Agra",
+  "Udaipur",
+  "Rishikesh",
+  "Darjeeling",
+  "Andaman",
+  "Kashmir",
+  "Manali",
+  "Mysore",
+  "Jaisalmer",
+  "Leh",
+  "Ooty",
+  "Coorg"
+];
 
 export function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
