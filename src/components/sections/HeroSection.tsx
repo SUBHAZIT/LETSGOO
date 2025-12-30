@@ -1,13 +1,23 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Calendar } from "lucide-react";
 import heroVideo from "@/assets/hero-video.mp4";
 import itineraryKerala from "@/assets/itinerary-kerala.jpg";
 import itineraryLadakh from "@/assets/itinerary-ladakh.jpg";
 
+const destinations = ["Kerala", "Ladakh", "Rajasthan", "Goa", "Himachal"];
+
 export function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % destinations.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-end overflow-hidden">
@@ -32,7 +42,21 @@ export function HeroSection() {
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
               Find your peace
               <br />
-              in India.
+              in{" "}
+              <span className="relative inline-block min-w-[200px] md:min-w-[280px]">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={currentIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-primary"
+                  >
+                    {destinations[currentIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </h1>
             <Link
               to="/destinations"
