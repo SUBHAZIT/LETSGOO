@@ -19,6 +19,7 @@ import MyTrips from "./pages/MyTrips";
 import SharedTrip from "./pages/SharedTrip";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
 
 const queryClient = new QueryClient();
 
@@ -32,18 +33,19 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/:id" element={<DestinationDetail />} />
+            <Route path="/destinations/:slug" element={<DestinationDetail />} />
             <Route path="/adventures" element={<Adventures />} />
-            <Route path="/adventures/:id" element={<AdventureDetail />} />
+            <Route path="/adventures/:slug" element={<AdventureDetail />} />
             <Route path="/ai-planner" element={<AIPlanner />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogDetail />} />
-            <Route path="/blog/write" element={<WriteBlog />} />
+            <Route path="/write-blog" element={<WriteBlog />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-trips" element={<MyTrips />} />
-            <Route path="/trip/:token" element={<SharedTrip />} />
+            <Route path="/trip/:shareToken" element={<SharedTrip />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
