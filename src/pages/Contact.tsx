@@ -66,6 +66,15 @@ export default function Contact() {
 
       if (error) throw error;
 
+      // Send confirmation email (fire and forget)
+      supabase.functions.invoke("send-contact-confirmation", {
+        body: {
+          name: result.data.name,
+          email: result.data.email,
+          subject: result.data.subject,
+        },
+      }).catch((err) => console.error("Email sending failed:", err));
+
       toast({
         title: "Message sent!",
         description: "Thank you for reaching out. We'll get back to you soon.",
