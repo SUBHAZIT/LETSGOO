@@ -9,9 +9,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Trash2, Users, Send, RefreshCw } from "lucide-react";
+import { Loader2, Mail, Trash2, Users, Send, RefreshCw, FileText } from "lucide-react";
 import { format } from "date-fns";
+
+interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  content: string;
+}
 
 interface Subscriber {
   id: string;
@@ -41,6 +49,27 @@ export function NewsletterManager() {
       return data as Subscriber[];
     },
   });
+
+  const { data: templates } = useQuery({
+    queryKey: ["email-templates"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("email_templates")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (error) throw error;
+      return data as EmailTemplate[];
+    },
+  });
+
+  const handleTemplateSelect = (templateId: string) => {
+    const template = templates?.find(t => t.id === templateId);
+    if (template) {
+      setEmailSubject(template.subject);
+      setEmailContent(template.content);
+    }
+  };
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -200,6 +229,28 @@ export function NewsletterManager() {
               <div className="text-sm text-muted-foreground">
                 Sending to: {selectedIds.length > 0 ? `${selectedIds.length} selected subscribers` : `All ${activeSubscribers.length} active subscribers`}
               </div>
+              
+              {templates && templates.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium">Use Template</label>
+                  <Select onValueChange={handleTemplateSelect}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select a template (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4" />
+                            {template.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
               <div>
                 <label className="text-sm font-medium">Subject</label>
                 <Input
