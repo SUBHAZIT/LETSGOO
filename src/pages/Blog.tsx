@@ -102,7 +102,7 @@ export default function Blog() {
               <span className="text-sm text-primary font-semibold">Travel Stories & Guides</span>
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mb-6">
-              The DOBACKPACK <span className="text-gradient">Blog</span>
+              The LETSGOO <span className="text-gradient">Blog</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
               Inspiring stories, practical guides, and insider tips from travelers around India and beyond.

@@ -31,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "DoBackpack <onboarding@resend.dev>",
+        from: "LetsGoo <onboarding@resend.dev>",
         to: [email],
         subject: "We received your message!",
         html: `
@@ -51,16 +51,16 @@ const handler = async (req: Request): Promise<Response> => {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎒 DoBackpack</h1>
+                <h1>🚀 LetsGoo</h1>
               </div>
               <div class="content">
                 <h2>Thank you for reaching out, ${name}!</h2>
                 <p>We have received your message regarding "<strong>${subject}</strong>" and our team will get back to you as soon as possible.</p>
                 <p>In the meantime, feel free to explore our travel guides and start planning your next adventure!</p>
-                <p>Best regards,<br>The DoBackpack Team</p>
+                <p>Best regards,<br>The LetsGoo Team</p>
               </div>
               <div class="footer">
-                <p>© ${new Date().getFullYear()} DoBackpack. All rights reserved.</p>
+                <p>© ${new Date().getFullYear()} LetsGoo. All rights reserved.</p>
               </div>
             </div>
           </body>

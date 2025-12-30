@@ -43,7 +43,7 @@ export default function Privacy() {
             <div className="bg-card border border-border rounded-xl p-8 mb-8">
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">Introduction</h2>
               <p>
-                Welcome to DoBackpack ("we," "our," or "us"). We are committed to protecting your personal information 
+                Welcome to LetsGoo ("we," "our," or "us"). We are committed to protecting your personal information 
                 and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard 
                 your information when you visit our website and use our travel planning services.
               </p>
@@ -165,8 +165,8 @@ export default function Privacy() {
                 If you have questions or comments about this privacy policy, please contact us at:
               </p>
               <div className="mt-4 p-4 bg-muted rounded-lg">
-                <p className="font-semibold text-foreground">DoBackpack</p>
-                <p>Email: privacy@dobackpack.com</p>
+                <p className="font-semibold text-foreground">LetsGoo</p>
+                <p>Email: privacy@letsgoo.com</p>
                 <p>Address: Mumbai, Maharashtra, India</p>
               </div>
             </div>
