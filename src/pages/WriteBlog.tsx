@@ -8,12 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BlogImageUploader } from "@/components/BlogImageUploader";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PenSquare, Loader2, ArrowLeft, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
 const categories = ["Travel", "Destinations", "Adventure", "Budget Travel", "Food & Culture", "Solo Travel", "Experiences"];
 
 export default function WriteBlog() {
@@ -212,21 +212,14 @@ export default function WriteBlog() {
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="content">Your Story *</Label>
-                <Textarea
-                  id="content"
-                  value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Share your travel experience, tips, and insights..."
-                  rows={15}
-                  required
-                  className="min-h-[300px]"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Tell your story! Include details about places visited, experiences, and recommendations.
-                </p>
-              </div>
+              <RichTextEditor
+                value={formData.content}
+                onChange={(content) => setFormData({ ...formData, content })}
+                label="Your Story"
+                placeholder="Share your travel experience, tips, and insights... (Markdown supported)"
+                minHeight="350px"
+                required
+              />
 
               <div className="flex gap-4 pt-4">
                 <Button

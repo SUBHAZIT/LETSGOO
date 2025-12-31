@@ -29,6 +29,7 @@ export type Database = {
           highlights: string[]
           id: string
           image_url: string | null
+          images: string[]
           is_published: boolean
           itinerary: Json
           location: string
@@ -53,6 +54,7 @@ export type Database = {
           highlights?: string[]
           id?: string
           image_url?: string | null
+          images?: string[]
           is_published?: boolean
           itinerary?: Json
           location: string
@@ -77,6 +79,7 @@ export type Database = {
           highlights?: string[]
           id?: string
           image_url?: string | null
+          images?: string[]
           is_published?: boolean
           itinerary?: Json
           location?: string
@@ -182,6 +185,7 @@ export type Database = {
           id: string
           ideal_duration: string
           image_url: string | null
+          images: string[]
           is_published: boolean
           name: string
           rating: number
@@ -203,6 +207,7 @@ export type Database = {
           id?: string
           ideal_duration: string
           image_url?: string | null
+          images?: string[]
           is_published?: boolean
           name: string
           rating?: number
@@ -224,6 +229,7 @@ export type Database = {
           id?: string
           ideal_duration?: string
           image_url?: string | null
+          images?: string[]
           is_published?: boolean
           name?: string
           rating?: number

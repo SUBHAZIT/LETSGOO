@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MultiImageUploader } from "@/components/MultiImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Loader2, Eye, EyeOff, X } from "lucide-react";
 
@@ -16,6 +18,7 @@ interface Adventure {
   title: string;
   location: string;
   image_url: string | null;
+  images: string[];
   category: string;
   difficulty: string;
   duration: string;
@@ -37,6 +40,7 @@ const categories = ["trekking", "water", "wildlife", "camping", "cycling", "para
 const difficulties = ["Easy", "Moderate", "Extreme"];
 
 export function AdventureManager() {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [adventures, setAdventures] = useState<Adventure[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +52,7 @@ export function AdventureManager() {
     title: "",
     slug: "",
     location: "",
-    image_url: "",
+    images: [] as string[],
     category: "trekking",
     difficulty: "Moderate",
     duration: "",
@@ -98,7 +102,7 @@ export function AdventureManager() {
       title: "",
       slug: "",
       location: "",
-      image_url: "",
+      images: [],
       category: "trekking",
       difficulty: "Moderate",
       duration: "",
@@ -124,7 +128,7 @@ export function AdventureManager() {
       title: adv.title,
       slug: adv.slug,
       location: adv.location,
-      image_url: adv.image_url || "",
+      images: adv.images || (adv.image_url ? [adv.image_url] : []),
       category: adv.category,
       difficulty: adv.difficulty,
       duration: adv.duration,
@@ -150,7 +154,8 @@ export function AdventureManager() {
 
     const adventureData = {
       ...formData,
-      image_url: formData.image_url || null,
+      image_url: formData.images[0] || null,
+      images: formData.images,
       altitude: formData.altitude || null,
       distance: formData.distance || null,
       physical_requirement: formData.physical_requirement || null,
@@ -287,10 +292,15 @@ export function AdventureManager() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Image URL</Label>
-                <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
-              </div>
+              {user && (
+                <MultiImageUploader
+                  values={formData.images}
+                  onChange={(images) => setFormData({ ...formData, images })}
+                  userId={user.id}
+                  maxImages={5}
+                  label="Adventure Images"
+                />
+              )}
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
