@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BlogImageUploader } from "@/components/BlogImageUploader";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Loader2, Eye, EyeOff, Check, X, Clock } from "lucide-react";
 
@@ -320,10 +321,14 @@ export function BlogManager() {
                 <Label>Excerpt</Label>
                 <Textarea value={formData.excerpt} onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} rows={2} required />
               </div>
-              <div className="space-y-2">
-                <Label>Content (Markdown supported)</Label>
-                <Textarea value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} rows={10} required />
-              </div>
+              <RichTextEditor
+                value={formData.content}
+                onChange={(content) => setFormData({ ...formData, content })}
+                label="Content"
+                placeholder="Write your blog content... (Markdown supported)"
+                minHeight="250px"
+                required
+              />
               <div className="flex items-center gap-2">
                 <Switch checked={formData.is_published} onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })} />
                 <Label>Publish immediately</Label>

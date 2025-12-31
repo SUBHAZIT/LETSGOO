@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BlogImageUploader } from "@/components/BlogImageUploader";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -451,17 +452,14 @@ export default function MySubmissions() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="edit-content">Your Story *</Label>
-              <Textarea
-                id="edit-content"
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                rows={10}
-                required
-                className="min-h-[200px]"
-              />
-            </div>
+            <RichTextEditor
+              value={formData.content}
+              onChange={(content) => setFormData({ ...formData, content })}
+              label="Your Story"
+              placeholder="Write your blog content... (Markdown supported)"
+              minHeight="250px"
+              required
+            />
 
             <div className="flex gap-4 pt-4">
               <Button

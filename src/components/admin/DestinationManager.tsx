@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MultiImageUploader } from "@/components/MultiImageUploader";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Loader2, Eye, EyeOff, X } from "lucide-react";
 
@@ -16,6 +18,7 @@ interface Destination {
   name: string;
   tagline: string;
   image_url: string | null;
+  images: string[];
   rating: number;
   reviews: number;
   category: string;
@@ -33,6 +36,7 @@ interface Destination {
 const categories = ["Heritage", "Nature", "Adventure", "Beach", "Spiritual", "Mountains"];
 
 export function DestinationManager() {
+  const { user } = useAuth();
   const { toast } = useToast();
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +48,7 @@ export function DestinationManager() {
     name: "",
     slug: "",
     tagline: "",
-    image_url: "",
+    images: [] as string[],
     rating: 4.5,
     reviews: 0,
     category: "Heritage",
@@ -91,7 +95,7 @@ export function DestinationManager() {
       name: "",
       slug: "",
       tagline: "",
-      image_url: "",
+      images: [],
       rating: 4.5,
       reviews: 0,
       category: "Heritage",
@@ -114,7 +118,7 @@ export function DestinationManager() {
       name: dest.name,
       slug: dest.slug,
       tagline: dest.tagline,
-      image_url: dest.image_url || "",
+      images: dest.images || (dest.image_url ? [dest.image_url] : []),
       rating: dest.rating,
       reviews: dest.reviews,
       category: dest.category,
@@ -137,7 +141,8 @@ export function DestinationManager() {
 
     const destinationData = {
       ...formData,
-      image_url: formData.image_url || null,
+      image_url: formData.images[0] || null,
+      images: formData.images,
       highlights: formData.highlights.filter(h => h.trim()),
       attractions: formData.attractions.filter(a => a.name.trim()),
       cuisine: formData.cuisine.filter(c => c.trim()),
@@ -270,10 +275,15 @@ export function DestinationManager() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Image URL</Label>
-                <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} placeholder="https://..." />
-              </div>
+              {user && (
+                <MultiImageUploader
+                  values={formData.images}
+                  onChange={(images) => setFormData({ ...formData, images })}
+                  userId={user.id}
+                  maxImages={5}
+                  label="Destination Images"
+                />
+              )}
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
