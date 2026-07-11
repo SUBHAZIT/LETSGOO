@@ -168,7 +168,7 @@ function generateHtmlResponse(title: string, message: string, success: boolean):
         <div class="icon">${icon}</div>
         <h1>${title}</h1>
         <p>${message}</p>
-        <a href="https://letsgoo.lovable.app" class="btn">Visit LetsGoo</a>
+        <a href="/" class="btn">Visit Site</a>
       </div>
     </body>
     </html>
