@@ -1,6 +1,14 @@
-# GlobePlan
+# LETSGOO
 
-A travel planning experience built with Vite, React, TypeScript, Tailwind CSS and Supabase.
+LETSGOO is a modern travel discovery and planning experience for India and the world. The app combines destination inspiration, curated adventures, blog content, and an AI-powered trip planner in a polished React + Vite interface.
+
+## Features
+
+- Discover destinations, adventures, and blog content
+- Browse curated travel inspiration and experience guides
+- Plan custom itineraries with the AI trip planner
+- Save and manage trip ideas through the app experience
+- Connect with Supabase-backed content and edge functions
 
 ## Getting started
 
@@ -28,5 +36,5 @@ A travel planning experience built with Vite, React, TypeScript, Tailwind CSS an
 
 ## Project notes
 
-- The app includes an AI trip planner experience backed by a Supabase Edge Function.
-- Configure any required environment variables in your local environment or deployment platform before running the edge functions.
+- The AI trip planner experience is powered by a Supabase Edge Function.
+- Configure the required environment variables before using the edge functions in your local or deployed environment.
